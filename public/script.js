@@ -1,36 +1,80 @@
-const API_URL = "http://localhost:3000/clientes";
-const form = document.getElementById("form-cliente");
-const lista = document.getElementById("lista-cliente");
+const API_URL = "http://localhost:3000";
 
-async function carregarClientes() {
-    const resp = await fetch(API_URL);
-    const clientes = await resp.json;
+// Carregar clientes ao abrir a página
+document.addEventListener("DOMContentLoad", carregarClientes);
 
+const form = document.getElementById("cliente-form");
+form.addEventListener("submit", salvarCliente);
+
+// Buscar e exibir clientes
+
+async function carregarClientes(){
+    const resposta = await fetch(API_URL);
+    const clientes = await resposta.json();
+
+    const lista = document.getElementById("clientes-lista");
     lista.innerHTML = "";
-    clientes.forEach(cliente => {
-        const li = document.createElement("li");
-        li.textContent = `${cliente.nome} - ${cliente.email} - ${cliente.telefone}`;
-        lista.appendChild(li);
+
+    clientes.forEach(clientes => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${cliente.nome}</td>
+            <td>${cliente.email}</td>
+            <td>${cliente.telefone}</td>
+            <td>
+                <button onClick="editarCliente('${cliente.id}', '${cliente.nome}', '${cliente.email}', '${cliente.telefone}')">Editar</button>
+                <button onClick="excluirCliente('${cliente.id}')">Excluir</button>
+            </td>
+        `;
+
+        lista.appendChild(tr);
     });
 }
 
-form.addEventListener("submit", async (e) => {
+// Salvar cliente (novo ou atualização)
+async function salvarCliente(e) {
     e.preventDefault();
 
-    const novoCliente = {
-        nome: document.getElementById("nome").value,
-        email: document.getElementById("email").value,
-        telefone: document.getElementById("telefone").value,
-    };
+    const id = document.getElementById("cliente-id").value;
+    const nome = document.getElementById("nome").value;
+    const email = document.getElementById("email").value;
+    const telefone = document.getElementById("telefone").value;
 
-    await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "apllication/json" },
-        body: JSON.stringify(novoCliente)
-    });
+    const cliente = { nome, email, telefone };
+
+    if (id) {
+        // Alterar (PUT)
+        await fetch(`${API_URL}/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cliente)
+        });
+    } else {
+        // Criar (POST)
+        await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(cliente)
+        });
+    }
 
     form.reset();
     carregarClientes();
-});
+}
 
-carregarClientes();
+// Preencher formulário para editar cliente
+function editarCliente(id, nome, email, telefone) {
+    document.getElementById("cliente-id").value = id;
+    document.getElementById("nome").value = nome;
+    document.getElementById("email").value = email;
+    document.getElementById("telefone").value = telefone;
+}
+
+// Excluir cliente
+async function excluirCliente(id) {
+    if (confirm("Deseja realmente excluir este cliente?")) {
+        await fetch(`${API_URL}/${id}`, {method: "DELETE"});
+        carregarClientes();
+    }
+}

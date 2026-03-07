@@ -9,6 +9,7 @@
         <h1>Cadastro de Clientes</h1>
 
         <form id="form-cliente">
+            <input type="hidden" id="cliente_id">
             <input type="text" id="nome" placeholder="Nome" required>
             <input type="email" id="email" placeholder="E-mail" required>
             <input type="text" id="telefone" placeholder="Telefone" required>
@@ -16,7 +17,15 @@
         </form>
 
         <h2>Lista de Clientes</h2>
-        <ul id="lista-clientes"></ul>
+        <table border="1">
+            <thead>
+                <tr>Nome</tr>
+                <tr>Email</tr>
+                <tr>Telefone</tr>
+                <tr>Ações</tr>
+            </thead>
+            <tbody id="cliente-lista"></tbody>
+        </table>
 
         <script src="./script.js"></script>
     </body>

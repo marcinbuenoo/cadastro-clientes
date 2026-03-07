@@ -3,27 +3,22 @@ body {
     margin: 20px;
 }
 
-h1, h2 {
-    text-align: center;
-}
-
 form {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
     margin-bottom: 20px;
 }
 
-input, button {
-    padding: 8px;
+input {
+    margin: 5px;
+    padding: 5px;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+button {
+    margin: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
 }
 
-li {
-    padding: 6px;
-    border-bottom: 1px solid #ddd;
+table {
+    width: 100%;
+    border-collapse: collapse;
 }
